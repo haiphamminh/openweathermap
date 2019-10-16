@@ -1,0 +1,4 @@
+dependencies {
+    compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    compile "org.springframework.kafka:spring-kafka:2.3.0.RELEASE"
+}

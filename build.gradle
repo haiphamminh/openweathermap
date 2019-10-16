@@ -1,0 +1,45 @@
+buildscript {
+    repositories {
+        repositories {
+            mavenCentral()
+        }
+    }
+}
+
+ext {
+    springBootVersion = '2.1.9.RELEASE'
+}
+
+subprojects {
+    group = 'org.openweathermap'
+    version = '1.0'
+
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
+    repositories {
+        mavenCentral()
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok:1.18.10'
+        annotationProcessor 'org.projectlombok:lombok:1.18.10'
+
+        testCompile 'org.junit.jupiter:junit-jupiter:5.5.1'
+    }
+
+    publishing {
+        publications {
+            "$project.name"(MavenPublication) {
+                groupId project.group
+                artifactId project.name
+                version project.version
+                from components.java
+            }
+        }
+    }
+}

@@ -1,0 +1,10 @@
+spring:
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+openweathermap:
+  apiUrl: http://api.openweathermap.org/data/2.5/weather
+  apiKey: df7974b458bba85b70723ac00aa4ef76
+

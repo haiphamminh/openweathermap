@@ -1,0 +1,5 @@
+.gradle/
+.idea/
+data-etl/build/
+data-report/build/
+data-collector/build/

@@ -1,0 +1,5 @@
+rootProject.name = 'openweathermap'
+
+include 'data-collector'
+include 'data-etl'
+include 'data-report'
