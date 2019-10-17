@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -12,16 +12,18 @@ public class WeatherData {
     private Long id;
     private String name;
     private Integer cod;
-    private Coord coord;
-    private List<Weather> weather;
     private String base;
-    private Main main;
+    private Long dt;
+    private Integer timezone;
     private Integer visibility;
+    private Coord coord;
+    private Set<Weather> weather;
+    private Main main;
     private Wind wind;
     private Clouds clouds;
-    private Long dt;
+    private Rain rain;
+    private Snow snow;
     private Sys sys;
-    private Integer timezone;
 
     @Data
     private static class Coord {
@@ -39,19 +41,26 @@ public class WeatherData {
 
     @Data
     private static class Main {
-        private Integer temp;
-        private Integer pressure;
+        @JsonProperty("temp")
+        private Float temperature;
+        private Float pressure;
         private Integer humidity;
         @JsonProperty("temp_min")
-        private Integer tempMin;
+        private Float temperatureMin;
         @JsonProperty("temp_max")
-        private Integer tempMax;
+        private Float temperatureMax;
+        @JsonProperty("sea_level")
+        private Float seaLevel;
+        @JsonProperty("grnd_level")
+        private Float grndLevel;
     }
 
     @Data
     private static class Wind {
-        private Integer speed;
-        private Integer deg;
+        private Float speed;
+        @JsonProperty("deg")
+        private Float degree;
+        private Float gust;
     }
 
     @Data
@@ -60,9 +69,26 @@ public class WeatherData {
     }
 
     @Data
+    private static class Rain {
+        @JsonProperty("1h")
+        private Float oneHour;
+        @JsonProperty("3h")
+        private Float threeHours;
+    }
+
+    @Data
+    private static class Snow {
+        @JsonProperty("1h")
+        private Float oneHour;
+        @JsonProperty("3h")
+        private Float threeHours;
+    }
+
+    @Data
     private static class Sys {
-        private Integer type;
         private Long id;
+        private Integer type;
+        private Float message;
         private String country;
         private Long sunrise;
         private Long sunset;
