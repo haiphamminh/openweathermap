@@ -1,5 +1,6 @@
 package org.openweathermap.data.etl.domain;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,11 +14,11 @@ import java.sql.Timestamp;
 import java.util.Set;
 
 @Data
+@Builder
 @Entity
 @Table(name = "weather_data")
 @EqualsAndHashCode(callSuper = true)
-public class WeatherData extends BaseEntity {
-    private Long providerId;
+public class WeatherDataEntity extends AuditEntity {
     private Long cityId;
     private String cityName;
     private Integer timezone;
@@ -25,17 +26,17 @@ public class WeatherData extends BaseEntity {
     @Column(name = "dct")
     private Timestamp dataCalculationTime;
     @OneToOne(cascade = CascadeType.ALL)
-    private Coord coord;
+    private CoordEntity coord;
     @OneToOne(cascade = CascadeType.ALL)
-    private Main main;
+    private MainEntity main;
     @OneToOne(cascade = CascadeType.ALL)
-    private Wind wind;
+    private WindEntity wind;
     @OneToOne(cascade = CascadeType.ALL)
-    private Rain rain;
+    private RainEntity rain;
     @OneToOne(cascade = CascadeType.ALL)
-    private Snow snow;
+    private SnowEntity snow;
     @OneToOne(cascade = CascadeType.ALL)
-    private Sys sys;
+    private SysEntity sys;
     @OneToMany(mappedBy = "weatherData")
-    private Set<Weather> weather;
+    private Set<WeatherEntity> weathers;
 }

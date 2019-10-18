@@ -6,9 +6,9 @@ create table coord (
     lon numeric not null,
     lat numeric not null,
     created_date timestamp not null,
-    create_by text not null,
+    create_by text,
     last_modified_date timestamp not null,
-    last_modified_by text not null
+    last_modified_by text
 );
 
 create table main (
@@ -21,9 +21,9 @@ create table main (
     sea_level numeric,
     grnd_level numeric,
     created_date timestamp not null,
-    create_by text not null,
+    create_by text,
     last_modified_date timestamp not null,
-    last_modified_by text not null
+    last_modified_by text
 );
 
 create table rain (
@@ -31,9 +31,9 @@ create table rain (
     one_hour numeric,
     three_hours numeric,
     created_date timestamp not null,
-    create_by text not null,
+    create_by text,
     last_modified_date timestamp not null,
-    last_modified_by text not null
+    last_modified_by text
 );
 
 create table snow (
@@ -41,9 +41,9 @@ create table snow (
     one_hour numeric,
     three_hours numeric,
     created_date timestamp not null,
-    create_by text not null,
+    create_by text,
     last_modified_date timestamp not null,
-    last_modified_by text not null
+    last_modified_by text
 );
 
 create table sys (
@@ -52,9 +52,9 @@ create table sys (
     sunrise timestamp,
     sunset timestamp,
     created_date timestamp not null,
-    create_by text not null,
+    create_by text,
     last_modified_date timestamp not null,
-    last_modified_by text not null
+    last_modified_by text
 );
 
 create table wind (
@@ -63,14 +63,13 @@ create table wind (
     deg numeric,
     gust numeric,
     created_date timestamp not null,
-    create_by text not null,
+    create_by text,
     last_modified_date timestamp not null,
-    last_modified_by text not null
+    last_modified_by text
 );
 
 create table weather_data (
     id bigserial primary key not null,
-    provider_id int,
     city_id bigint,
     city_name text,
     cloudiness int,
@@ -78,13 +77,14 @@ create table weather_data (
     timezone int,
     coord_id bigint not null references coord(id),
     main_id bigint not null references main(id),
-    rain_id bigint not null references rain(id),
-    snow_id bigint not null references snow(id),
+    rain_id bigint references rain(id),
+    snow_id bigint references snow(id),
     sys_id bigint not null references sys(id),
+    wind_id bigint not null references wind(id),
     created_date timestamp not null,
-    create_by text not null,
+    create_by text,
     last_modified_date timestamp not null,
-    last_modified_by text not null
+    last_modified_by text
 );
 
 create table weather (
@@ -95,7 +95,7 @@ create table weather (
     icon text,
     weather_data_id bigint not null references weather_data(id),
     created_date timestamp not null,
-    create_by text not null,
+    create_by text,
     last_modified_date timestamp not null,
-    last_modified_by text not null
+    last_modified_by text
 );

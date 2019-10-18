@@ -26,12 +26,6 @@ public class WeatherData {
     private Sys sys;
 
     @Data
-    public static class Coord {
-        private Float lon;
-        private Float lat;
-    }
-
-    @Data
     public static class Weather {
         private Long id;
         private String main;
@@ -40,7 +34,13 @@ public class WeatherData {
     }
 
     @Data
-    public static class Main {
+    public class Coord {
+        private Float lon;
+        private Float lat;
+    }
+
+    @Data
+    public class Main {
         @JsonProperty("temp")
         private Float temperature;
         private Float pressure;
@@ -56,7 +56,7 @@ public class WeatherData {
     }
 
     @Data
-    public static class Wind {
+    public class Wind {
         private Float speed;
         @JsonProperty("deg")
         private Float degree;
@@ -64,12 +64,12 @@ public class WeatherData {
     }
 
     @Data
-    public static class Clouds {
+    public class Clouds {
         private Integer all;
     }
 
     @Data
-    public static class Rain {
+    public class Rain {
         @JsonProperty("1h")
         private Float oneHour;
         @JsonProperty("3h")
@@ -77,7 +77,7 @@ public class WeatherData {
     }
 
     @Data
-    public static class Snow {
+    public class Snow {
         @JsonProperty("1h")
         private Float oneHour;
         @JsonProperty("3h")
@@ -85,7 +85,7 @@ public class WeatherData {
     }
 
     @Data
-    public static class Sys {
+    public class Sys {
         private Long id;
         private Integer type;
         private Float message;

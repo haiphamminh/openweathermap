@@ -2,6 +2,24 @@ server:
   port: 9001
 
 spring:
+  kafka:
+    listener:
+      type: BATCH
+      ack-mode: BATCH
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: batch
+      max-poll-records: 10
+      #      enable-auto-commit: true
+      auto-offset-reset: earliest
+      key-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    properties:
+      spring:
+        json:
+          trusted:
+            packages: '*'
+
   datasource:
     url: jdbc:postgresql://localhost:5432/weatherdata
     username: postgres

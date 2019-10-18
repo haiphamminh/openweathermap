@@ -1,5 +1,6 @@
 package org.openweathermap.data.etl.domain;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -9,10 +10,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Data
+@Builder
 @Entity
 @Table(name = "main")
 @EqualsAndHashCode(callSuper = true)
-public class Main extends BaseEntity {
+public class MainEntity extends AuditEntity {
     @Column(name = "temp")
     private Float temperature;
     private Float pressure;
@@ -26,5 +28,5 @@ public class Main extends BaseEntity {
     @Column(name = "grnd_level")
     private Float grndLevel;
     @OneToOne(mappedBy = "main")
-    private WeatherData weatherData;
+    private WeatherDataEntity weatherData;
 }

@@ -1,20 +1,24 @@
 package org.openweathermap.data.etl.domain;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Data
+@Builder
 @Entity
 @Table(name = "wind")
 @EqualsAndHashCode(callSuper = true)
-public class Wind extends BaseEntity {
+public class WindEntity extends AuditEntity {
     private Float speed;
+    @Column(name = "deg")
     private Float degree;
     private Float gust;
     @OneToOne(mappedBy = "wind")
-    private WeatherData weatherData;
+    private WeatherDataEntity weatherData;
 }
