@@ -2,8 +2,8 @@ package org.openweathermap.data.collector.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.openweathermap.data.collector.config.WeatherMapSettings;
-import org.openweathermap.data.collector.model.WeatherData;
 import org.openweathermap.data.collector.service.DataCollectorService;
+import org.openweathermap.data.model.WeatherData;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;

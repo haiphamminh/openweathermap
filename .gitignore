@@ -3,3 +3,5 @@
 data-etl/build/
 data-report/build/
 data-collector/build/
+data-model/build/
+data-repo/build/

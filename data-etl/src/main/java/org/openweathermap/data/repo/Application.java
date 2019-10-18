@@ -1,4 +1,4 @@
-package org.openweathermap.data.etl;
+package org.openweathermap.data.repo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

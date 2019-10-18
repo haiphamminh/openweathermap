@@ -1,8 +1,9 @@
-package org.openweathermap.data.etl.service.impl;
+package org.openweathermap.data.repo.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.openweathermap.data.collector.model.WeatherData;
-import org.openweathermap.data.etl.service.DataTransformer;
+import lombok.extern.slf4j.Slf4j;
+import org.openweathermap.data.model.WeatherData;
+import org.openweathermap.data.repo.service.DataTransformer;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KafkaConsumer {
@@ -20,7 +22,7 @@ public class KafkaConsumer {
     public void consume(@Payload List<WeatherData> data,
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) List<Integer> partitions,
                         @Header(KafkaHeaders.OFFSET) List<Long> offsets) {
-        System.out.println("data size: " + data.size());
+        log.info("Consumed {} messages from Kafka", data.size());
         dataTransformer.transformAndSave(data);
     }
 }

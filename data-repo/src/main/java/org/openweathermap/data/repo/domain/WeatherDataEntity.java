@@ -1,4 +1,4 @@
-package org.openweathermap.data.etl.domain;
+package org.openweathermap.data.repo.domain;
 
 import lombok.Builder;
 import lombok.Data;

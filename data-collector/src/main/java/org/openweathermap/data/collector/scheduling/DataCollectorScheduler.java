@@ -1,9 +1,9 @@
 package org.openweathermap.data.collector.scheduling;
 
 import lombok.RequiredArgsConstructor;
-import org.openweathermap.data.collector.model.WeatherData;
 import org.openweathermap.data.collector.service.DataCollectorService;
 import org.openweathermap.data.collector.service.KafkaProducer;
+import org.openweathermap.data.model.WeatherData;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

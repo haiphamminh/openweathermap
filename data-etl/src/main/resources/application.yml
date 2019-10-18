@@ -2,6 +2,9 @@ server:
   port: 9001
 
 spring:
+  profiles:
+    include:
+      - repo
   kafka:
     listener:
       type: BATCH
@@ -19,20 +22,3 @@ spring:
         json:
           trusted:
             packages: '*'
-
-  datasource:
-    url: jdbc:postgresql://localhost:5432/weatherdata
-    username: postgres
-    password: changeme
-    driver-class-name: org.postgresql.Driver
-
-  hikari:
-    connectionTimeout: 20000
-    maximumPoolSize: 5
-
-  jpa:
-    properties:
-      hibernate:
-        jdbc:
-          lob:
-            non_contextual_creation: true

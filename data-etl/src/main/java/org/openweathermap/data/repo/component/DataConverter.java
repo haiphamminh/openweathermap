@@ -1,21 +1,20 @@
-package org.openweathermap.data.etl.component;
+package org.openweathermap.data.repo.component;
 
-import org.openweathermap.data.collector.model.WeatherData;
-import org.openweathermap.data.collector.model.WeatherData.Coord;
-import org.openweathermap.data.collector.model.WeatherData.Main;
-import org.openweathermap.data.collector.model.WeatherData.Rain;
-import org.openweathermap.data.collector.model.WeatherData.Snow;
-import org.openweathermap.data.collector.model.WeatherData.Sys;
-import org.openweathermap.data.collector.model.WeatherData.Weather;
-import org.openweathermap.data.collector.model.WeatherData.Wind;
-import org.openweathermap.data.etl.domain.CoordEntity;
-import org.openweathermap.data.etl.domain.MainEntity;
-import org.openweathermap.data.etl.domain.RainEntity;
-import org.openweathermap.data.etl.domain.SnowEntity;
-import org.openweathermap.data.etl.domain.SysEntity;
-import org.openweathermap.data.etl.domain.WeatherDataEntity;
-import org.openweathermap.data.etl.domain.WeatherEntity;
-import org.openweathermap.data.etl.domain.WindEntity;
+import org.openweathermap.data.repo.domain.CoordEntity;
+import org.openweathermap.data.repo.domain.MainEntity;
+import org.openweathermap.data.repo.domain.RainEntity;
+import org.openweathermap.data.repo.domain.SnowEntity;
+import org.openweathermap.data.repo.domain.SysEntity;
+import org.openweathermap.data.repo.domain.WeatherDataEntity;
+import org.openweathermap.data.repo.domain.WeatherEntity;
+import org.openweathermap.data.repo.domain.WindEntity;
+import org.openweathermap.data.model.WeatherData;
+import org.openweathermap.data.model.WeatherData.Coord;
+import org.openweathermap.data.model.WeatherData.Rain;
+import org.openweathermap.data.model.WeatherData.Snow;
+import org.openweathermap.data.model.WeatherData.Sys;
+import org.openweathermap.data.model.WeatherData.Weather;
+import org.openweathermap.data.model.WeatherData.Wind;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -25,6 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.openweathermap.data.model.WeatherData.Main;
 
 @Component
 public class DataConverter {

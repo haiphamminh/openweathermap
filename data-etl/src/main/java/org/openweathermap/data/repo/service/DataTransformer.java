@@ -1,6 +1,6 @@
-package org.openweathermap.data.etl.service;
+package org.openweathermap.data.repo.service;
 
-import org.openweathermap.data.collector.model.WeatherData;
+import org.openweathermap.data.model.WeatherData;
 
 import java.util.List;
 

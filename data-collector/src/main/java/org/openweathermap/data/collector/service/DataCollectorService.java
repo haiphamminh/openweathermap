@@ -1,6 +1,6 @@
 package org.openweathermap.data.collector.service;
 
-import org.openweathermap.data.collector.model.WeatherData;
+import org.openweathermap.data.model.WeatherData;
 
 public interface DataCollectorService {
     WeatherData fetchCurrentWeatherDataByCityName(String query, String units, String mode);

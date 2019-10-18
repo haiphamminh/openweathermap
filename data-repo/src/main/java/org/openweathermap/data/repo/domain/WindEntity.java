@@ -1,9 +1,10 @@
-package org.openweathermap.data.etl.domain;
+package org.openweathermap.data.repo.domain;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -11,11 +12,13 @@ import javax.persistence.Table;
 @Data
 @Builder
 @Entity
-@Table(name = "coord")
+@Table(name = "wind")
 @EqualsAndHashCode(callSuper = true)
-public class CoordEntity extends AuditEntity {
-    private Float lon;
-    private Float lat;
-    @OneToOne(mappedBy = "coord")
+public class WindEntity extends AuditEntity {
+    private Float speed;
+    @Column(name = "deg")
+    private Float degree;
+    private Float gust;
+    @OneToOne(mappedBy = "wind")
     private WeatherDataEntity weatherData;
 }

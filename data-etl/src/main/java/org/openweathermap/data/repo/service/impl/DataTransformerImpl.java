@@ -1,12 +1,12 @@
-package org.openweathermap.data.etl.service.impl;
+package org.openweathermap.data.repo.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.openweathermap.data.collector.model.WeatherData;
-import org.openweathermap.data.etl.component.DataConverter;
-import org.openweathermap.data.etl.domain.WeatherDataEntity;
-import org.openweathermap.data.etl.repository.WeatherDataRepository;
-import org.openweathermap.data.etl.service.DataTransformer;
+import org.openweathermap.data.model.WeatherData;
+import org.openweathermap.data.repo.WeatherDataRepository;
+import org.openweathermap.data.repo.component.DataConverter;
+import org.openweathermap.data.repo.domain.WeatherDataEntity;
+import org.openweathermap.data.repo.service.DataTransformer;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

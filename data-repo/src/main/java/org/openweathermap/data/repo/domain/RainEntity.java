@@ -1,4 +1,4 @@
-package org.openweathermap.data.etl.domain;
+package org.openweathermap.data.repo.domain;
 
 import lombok.Builder;
 import lombok.Data;
@@ -12,13 +12,13 @@ import javax.persistence.Table;
 @Data
 @Builder
 @Entity
-@Table(name = "snow")
+@Table(name = "rain")
 @EqualsAndHashCode(callSuper = true)
-public class SnowEntity extends AuditEntity {
+public class RainEntity extends AuditEntity {
     @Column(name = "one_hour")
     private Float oneHour;
     @Column(name = "three_hours")
     private Float threeHours;
-    @OneToOne(mappedBy = "snow")
+    @OneToOne(mappedBy = "rain")
     private WeatherDataEntity weatherData;
 }
