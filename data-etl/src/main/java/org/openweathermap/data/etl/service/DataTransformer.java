@@ -1,4 +1,4 @@
-package org.openweathermap.data.repo.service;
+package org.openweathermap.data.etl.service;
 
 import org.openweathermap.data.model.WeatherData;
 

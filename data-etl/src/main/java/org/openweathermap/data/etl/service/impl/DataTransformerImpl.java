@@ -1,12 +1,12 @@
-package org.openweathermap.data.repo.service.impl;
+package org.openweathermap.data.etl.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openweathermap.data.etl.component.DataConverter;
+import org.openweathermap.data.etl.service.DataTransformer;
 import org.openweathermap.data.model.WeatherData;
-import org.openweathermap.data.repo.WeatherDataRepository;
-import org.openweathermap.data.repo.component.DataConverter;
+import org.openweathermap.data.repo.BaseRepository;
 import org.openweathermap.data.repo.domain.WeatherDataEntity;
-import org.openweathermap.data.repo.service.DataTransformer;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,7 +17,7 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class DataTransformerImpl implements DataTransformer {
-    private final WeatherDataRepository repository;
+    private final BaseRepository repository;
     private final DataConverter dataConverter;
 
     @Override

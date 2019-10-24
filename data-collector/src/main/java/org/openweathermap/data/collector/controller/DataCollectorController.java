@@ -15,10 +15,9 @@ public class DataCollectorController {
     private final DataCollectorService dataCollectorService;
 
     @PostMapping("/city_name")
-    public void fetchCurrentWeatherDataByCityName(@RequestParam("q") String query, @RequestParam(required = false,
-                                                                                                 defaultValue =
-                                                                                                         "metrics") String units,
-                                                  @RequestParam(required = false) String mode) {
+    public void fetchCurrentWeatherDataByCityName(@RequestParam("q") String query,
+                                                  @RequestParam(required = false, defaultValue = "metrics")
+                                                          String units, @RequestParam(required = false) String mode) {
         dataCollectorService.fetchCurrentWeatherDataByCityName(query, units, mode);
     }
 
@@ -31,9 +30,8 @@ public class DataCollectorController {
 
     @PostMapping("/location")
     public void fetchCurrentWeatherDataByLocation(@RequestParam int lat, @RequestParam int lon,
-                                                  @RequestParam(required = false,
-                                                                defaultValue = "metrics") String units,
-                                                  @RequestParam(required = false) String mode) {
+                                                  @RequestParam(required = false, defaultValue = "metrics")
+                                                          String units, @RequestParam(required = false) String mode) {
 
     }
 }

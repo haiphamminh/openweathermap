@@ -12,6 +12,9 @@ spring:
   jpa:
     properties:
       hibernate:
+        generate_statistics: true
+        order_inserts: true
         jdbc:
+          batch_size: 100
           lob:
             non_contextual_creation: true

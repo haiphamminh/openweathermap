@@ -1,8 +1,11 @@
 package org.openweathermap.data.repo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +16,8 @@ import javax.persistence.Table;
 @Builder
 @Entity
 @Table(name = "wind")
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class WindEntity extends AuditEntity {
     private Float speed;
@@ -20,5 +25,6 @@ public class WindEntity extends AuditEntity {
     private Float degree;
     private Float gust;
     @OneToOne(mappedBy = "wind")
+    @JsonIgnore
     private WeatherDataEntity weatherData;
 }

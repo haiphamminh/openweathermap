@@ -3,6 +3,7 @@ package org.openweathermap.data.collector.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.openweathermap.data.collector.config.WeatherMapSettings;
 import org.openweathermap.data.collector.service.DataCollectorService;
+import org.openweathermap.data.collector.service.KafkaProducer;
 import org.openweathermap.data.model.WeatherData;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,7 +14,7 @@ import java.net.URI;
 @Service
 @RequiredArgsConstructor
 public class DataCollectorServiceImpl implements DataCollectorService {
-
+    private final KafkaProducer kafkaProducer;
     private final RestTemplate restTemplate;
     private final WeatherMapSettings settings;
 
@@ -28,7 +29,11 @@ public class DataCollectorServiceImpl implements DataCollectorService {
                                       .encode()
                                       .toUri();
 
-        return restTemplate.getForObject(url, WeatherData.class);
+        WeatherData weatherData = restTemplate.getForObject(url, WeatherData.class);
+        if (weatherData != null) {
+            kafkaProducer.send("weather.data", weatherData);
+        }
+        return weatherData;
     }
 
     @Override

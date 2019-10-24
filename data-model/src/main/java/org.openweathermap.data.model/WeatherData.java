@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -17,7 +18,7 @@ public class WeatherData {
     private Integer timezone;
     private Integer visibility;
     private Coord coord;
-    private Set<Weather> weather;
+    private List<Weather> weather;
     private Main main;
     private Wind wind;
     private Clouds clouds;

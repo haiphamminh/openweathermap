@@ -1,5 +1,12 @@
-package org.openweathermap.data.repo.component;
+package org.openweathermap.data.etl.component;
 
+import org.openweathermap.data.model.WeatherData;
+import org.openweathermap.data.model.WeatherData.Coord;
+import org.openweathermap.data.model.WeatherData.Rain;
+import org.openweathermap.data.model.WeatherData.Snow;
+import org.openweathermap.data.model.WeatherData.Sys;
+import org.openweathermap.data.model.WeatherData.Weather;
+import org.openweathermap.data.model.WeatherData.Wind;
 import org.openweathermap.data.repo.domain.CoordEntity;
 import org.openweathermap.data.repo.domain.MainEntity;
 import org.openweathermap.data.repo.domain.RainEntity;
@@ -8,13 +15,6 @@ import org.openweathermap.data.repo.domain.SysEntity;
 import org.openweathermap.data.repo.domain.WeatherDataEntity;
 import org.openweathermap.data.repo.domain.WeatherEntity;
 import org.openweathermap.data.repo.domain.WindEntity;
-import org.openweathermap.data.model.WeatherData;
-import org.openweathermap.data.model.WeatherData.Coord;
-import org.openweathermap.data.model.WeatherData.Rain;
-import org.openweathermap.data.model.WeatherData.Snow;
-import org.openweathermap.data.model.WeatherData.Sys;
-import org.openweathermap.data.model.WeatherData.Weather;
-import org.openweathermap.data.model.WeatherData.Wind;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -40,34 +40,35 @@ public class DataConverter {
                    .collect(Collectors.toList());
     }
 
-    public WeatherDataEntity convert(WeatherData weatherData) {
-        return WeatherDataEntity.builder()
-                                .cityId(weatherData.getId())
-                                .cityName(weatherData.getName())
-                                .cloudiness(weatherData.getClouds()
-                                                       .getAll())
-                                .timezone(weatherData.getTimezone())
-                                .dataCalculationTime(convert(weatherData.getDt() * 1000))
-                                .coord(convert(weatherData.getCoord()))
-                                .main(convert(weatherData.getMain()))
-                                .rain(convert(weatherData.getRain()))
-                                .snow(convert(weatherData.getSnow()))
-                                .sys(convert(weatherData.getSys()))
-                                .wind(convert(weatherData.getWind()))
-                                .weathers(convert(weatherData.getWeather()))
-                                .build();
+    public WeatherDataEntity convert(WeatherData data) {
+        WeatherDataEntity weatherDataEntity = WeatherDataEntity.builder()
+                                                               .cityId(data.getId())
+                                                               .cityName(data.getName())
+                                                               .cloudiness(data.getClouds()
+                                                                               .getAll())
+                                                               .timezone(data.getTimezone())
+                                                               .dataCalculationTime(convert(data.getDt() * 1000))
+                                                               .coord(convert(data.getCoord()))
+                                                               .main(convert(data.getMain()))
+                                                               .rain(convert(data.getRain()))
+                                                               .snow(convert(data.getSnow()))
+                                                               .sys(convert(data.getSys()))
+                                                               .wind(convert(data.getWind()))
+                                                               .build();
+        weatherDataEntity.setWeathers(convert(weatherDataEntity, data.getWeather()));
+        return weatherDataEntity;
     }
 
-    public Set<WeatherEntity> convert(Set<Weather> weathers) {
+    public Set<WeatherEntity> convert(WeatherDataEntity weatherDataEntity, Set<Weather> weathers) {
         if (CollectionUtils.isEmpty(weathers)) {
             return Collections.emptySet();
         }
         return weathers.stream()
-                       .map(this::convert)
+                       .map(weather -> convert(weatherDataEntity, weather))
                        .collect(Collectors.toSet());
     }
 
-    public WeatherEntity convert(Weather weather) {
+    public WeatherEntity convert(WeatherDataEntity weatherDataEntity, Weather weather) {
         if (weather == null) return null;
 
         return WeatherEntity.builder()
@@ -75,6 +76,7 @@ public class DataConverter {
                             .icon(weather.getIcon())
                             .main(weather.getMain())
                             .providerId(weather.getId())
+                            .weatherData(weatherDataEntity)
                             .build();
     }
 
