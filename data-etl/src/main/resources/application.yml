@@ -1,6 +1,9 @@
 server:
   port: 9001
 
+openweathermap:
+  topic: weather.data
+
 spring:
   profiles:
     include:
@@ -13,7 +16,6 @@ spring:
       bootstrap-servers: localhost:9092
       group-id: batch
       max-poll-records: 10
-      #      enable-auto-commit: true
       auto-offset-reset: earliest
       key-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer

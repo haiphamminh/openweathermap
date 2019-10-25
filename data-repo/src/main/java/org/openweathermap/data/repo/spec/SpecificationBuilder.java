@@ -11,6 +11,7 @@ import lombok.Data;
 import org.openweathermap.data.repo.domain.WeatherDataEntity;
 import org.springframework.data.jpa.domain.Specification;
 
+@Data
 public class SpecificationBuilder {
 
     private final List<SearchCriteria> params;
@@ -19,14 +20,14 @@ public class SpecificationBuilder {
         params = new ArrayList<>();
     }
 
-    public static Specification<WeatherDataEntity> from(String search) {
-        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>|>=|<=)(\\w+?),", Pattern.UNICODE_CHARACTER_CLASS);
+    public static SpecificationBuilder from(String search) {
+        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>|>=|<=)([\\w ]+?),", Pattern.UNICODE_CHARACTER_CLASS);
         Matcher matcher = pattern.matcher(search + ",");
         SpecificationBuilder builder = new SpecificationBuilder();
         while (matcher.find()) {
             builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
         }
-        return builder.build();
+        return builder;
     }
 
     public SpecificationBuilder with(String key, String operation, Object value) {

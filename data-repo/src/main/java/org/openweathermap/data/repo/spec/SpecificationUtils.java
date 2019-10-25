@@ -42,23 +42,26 @@ public class SpecificationUtils {
         return (Specification<WeatherDataEntity>) (root, query, cb) -> {
             String key = criteria.getKey();
             String operation = criteria.getOperation();
-            Object value = criteria.getValue();
+            String value = criteria.getValue()
+                                   .toString()
+                                   .trim();
             String joinedAttr = joinMap.get(key);
             Path<String> path =
                     StringUtils.isEmpty(joinedAttr) ? root.get(key) : root.join(joinedAttr, JoinType.LEFT)
                                                                           .get(key);
             switch (operation) {
                 case ">":
-                    return cb.greaterThan(path, value.toString());
+                    return cb.greaterThan(path, value);
                 case ">=":
-                    return cb.greaterThanOrEqualTo(path, value.toString());
+                    return cb.greaterThanOrEqualTo(path, value);
                 case "<":
-                    return cb.lessThan(path, value.toString());
+                    return cb.lessThan(path, value);
                 case "<=":
-                    return cb.lessThanOrEqualTo(path, value.toString());
+                    return cb.lessThanOrEqualTo(path, value);
                 case ":": {
                     if (path.getJavaType() == String.class) {
-                        return cb.like(path, "%" + value.toString() + "%");
+                        return cb.like(path, "%" + value
+                                .trim() + "%");
                     }
                     return cb.equal(path, value);
                 }

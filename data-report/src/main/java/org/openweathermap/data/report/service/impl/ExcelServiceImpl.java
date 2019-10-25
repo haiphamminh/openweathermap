@@ -8,7 +8,6 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
@@ -19,32 +18,41 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.openweathermap.data.report.model.AggregatedData;
 import org.openweathermap.data.report.model.Header;
 import org.openweathermap.data.report.service.ExcelService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 @Service
 public class ExcelServiceImpl implements ExcelService {
-    private static void createHeaderRow(Workbook wb, Sheet sheet, int rowIndex, List<String> headers) {
-        CellStyle style = createCellStyle(wb, 10);
+    @Value("${report.title-prefix}")
+    private String titlePrefix;
+
+    @Value("${report.sheet-name-prefix}")
+    private String sheetNamePrefix;
+
+    private void createHeaderRow(Workbook wb, Sheet sheet, int rowIndex, List<String> headers) {
+        CellStyle style = createHeaderCellStyle(wb, 10, true);
         Row row = sheet.createRow(rowIndex);
         for (int i = 0; i < headers.size(); i++) {
             createCell(row, Header.getDisplayName(headers.get(i)), i, style);
         }
     }
 
-    private static CellStyle createCellStyle(Workbook wb, int fontHeight) {
+    private CellStyle createHeaderCellStyle(Workbook wb, int fontHeight, boolean horizontalCenter) {
         Font font = wb.createFont();
         font.setFontHeightInPoints((short) fontHeight);
         font.setBold(true);
         CellStyle style = wb.createCellStyle();
-        style.setAlignment(HorizontalAlignment.CENTER);
+        if (horizontalCenter) {
+            style.setAlignment(HorizontalAlignment.CENTER);
+        }
         style.setVerticalAlignment(VerticalAlignment.CENTER);
         style.setFont(font);
         return style;
     }
 
-    private static void createCell(Row row, AggregatedData data, int colIndex,
-                                   String headerName) throws NoSuchFieldException, IllegalAccessException {
+    private void createCell(Row row, AggregatedData data, int colIndex,
+                            String headerName) throws NoSuchFieldException, IllegalAccessException {
         Field field = AggregatedData.class.getDeclaredField(headerName);
         field.setAccessible(true);
         Object value = field.get(data);
@@ -53,11 +61,11 @@ public class ExcelServiceImpl implements ExcelService {
         }
     }
 
-    private static void createCell(Row row, String data, int colIndex) {
+    private void createCell(Row row, String data, int colIndex) {
         createCell(row, data, colIndex, null);
     }
 
-    private static void createCell(Row row, String data, int colIndex, CellStyle cellStyle) {
+    private void createCell(Row row, String data, int colIndex, CellStyle cellStyle) {
         Cell cell = row.createCell(colIndex);
         cell.setCellValue(data);
         if (cellStyle != null) {
@@ -65,14 +73,14 @@ public class ExcelServiceImpl implements ExcelService {
         }
     }
 
-    private static void createReportNameRow(Workbook wb, Sheet sheet, int rowIndex, int lastCol) {
-        CellStyle style = createCellStyle(wb, 13);
-        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, lastCol - 1));
+    private void createReportNameRow(Workbook wb, Sheet sheet, int rowIndex, int lastCol) {
+        CellStyle style = createHeaderCellStyle(wb, 14, false);
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, lastCol));
         Row row = sheet.createRow(rowIndex);
-        createCell(row, "Weather Data Report", 0, style);
+        createCell(row, titlePrefix, 0, style);
     }
 
-    private static List<String> extractHeaders(List<String> fields) {
+    private List<String> extractHeaders(List<String> fields) {
         if (CollectionUtils.isEmpty(fields)) {
             return Header.getHeaderKeys();
         }
@@ -82,30 +90,27 @@ public class ExcelServiceImpl implements ExcelService {
     }
 
     @Override
-    public byte[] export(List<AggregatedData> data, List<String> fields) throws IOException, NoSuchFieldException,
-            IllegalAccessException {
+    public byte[] export(List<AggregatedData> aggregatedData, List<String> fields)
+            throws IOException, NoSuchFieldException,
+                   IllegalAccessException {
         Workbook wb = new HSSFWorkbook();
-        CreationHelper createHelper = wb.getCreationHelper();
-        Sheet sheet = wb.createSheet("Weather Data");
+        Sheet sheet = wb.createSheet(sheetNamePrefix);
         sheet.setAutobreaks(true);
         int rowIndex = 0;
         List<String> headers = extractHeaders(fields);
-        createReportNameRow(wb, sheet, rowIndex++, headers.size());
+        createReportNameRow(wb, sheet, rowIndex++, headers.size() - 1);
         createHeaderRow(wb, sheet, rowIndex++, headers);
 
         int colIndex = 0;
         int no = 1;
-        for (int i = rowIndex; i < data.size(); i++) {
-            Row row = sheet.createRow(i);
+        for (AggregatedData data : aggregatedData) {
+            Row row = sheet.createRow(rowIndex++);
             createCell(row, String.valueOf(no++), colIndex++);
 
             for (int j = 1; j < headers.size(); j++) {
-                createCell(row, data.get(i), colIndex++, headers.get(j));
+                createCell(row, data, colIndex++, headers.get(j));
             }
             colIndex = 0;
-        }
-        for (colIndex = 0; colIndex < headers.size(); colIndex++) {
-            sheet.autoSizeColumn(colIndex);
         }
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         wb.write(out);

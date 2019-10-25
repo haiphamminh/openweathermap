@@ -3,10 +3,10 @@ package org.openweathermap.data.collector.service.impl;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.openweathermap.data.collector.config.WeatherMapSettings;
 import org.openweathermap.data.collector.service.DataCollectorService;
 import org.openweathermap.data.collector.service.KafkaProducer;
 import org.openweathermap.data.model.WeatherData;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -17,12 +17,20 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class DataCollectorServiceImpl implements DataCollectorService {
     private final KafkaProducer kafkaProducer;
     private final RestTemplate restTemplate;
-    private final WeatherMapSettings settings;
+
+    @Value("${openweathermap.api.url}")
+    private String apiUrl;
+
+    @Value("${openweathermap.api.key}")
+    private String apiKey;
+
+    @Value("${openweathermap.topic}")
+    private String topic;
 
     @Override
     public WeatherData fetchCurrentWeatherDataByCityName(String query, String units, String mode) {
-        URI url = UriComponentsBuilder.fromUriString("http://api.openweathermap.org/data/2.5/weather")
-                                      .queryParam("appid", "df7974b458bba85b70723ac00aa4ef76")
+        URI url = UriComponentsBuilder.fromUriString(apiUrl)
+                                      .queryParam("appid", apiKey)
                                       .queryParam("q", query)
                                       .queryParam("units", units)
                                       .queryParam("mode", mode)
@@ -33,7 +41,7 @@ public class DataCollectorServiceImpl implements DataCollectorService {
         WeatherData weatherData = restTemplate.getForObject(url, WeatherData.class);
         log.info("Fetched the current weather data");
         if (weatherData != null) {
-            kafkaProducer.send("weather.data", weatherData);
+            kafkaProducer.send(topic, weatherData);
             log.info("Sent the data to Kafka successfully");
         }
         return weatherData;

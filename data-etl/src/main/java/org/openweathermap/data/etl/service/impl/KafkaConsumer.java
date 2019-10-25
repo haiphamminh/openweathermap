@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class KafkaConsumer {
     private final DataTransformer dataTransformer;
 
-    @KafkaListener(id = "batch-listener", topics = "weather.data")
+    @KafkaListener(id = "batch-listener", topics = "${openweathermap.topic}")
     public void consume(@Payload List<WeatherData> data,
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) List<Integer> partitions,
                         @Header(KafkaHeaders.OFFSET) List<Long> offsets) {

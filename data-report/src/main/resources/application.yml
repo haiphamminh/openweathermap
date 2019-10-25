@@ -6,3 +6,10 @@ spring:
   profiles:
     include:
       - repo
+
+report:
+  title-prefix: Weather Data Report
+  sheet-name-prefix: Weather Data
+
+
+

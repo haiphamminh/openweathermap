@@ -16,8 +16,6 @@ import org.springframework.util.CollectionUtils;
 @Component
 @RequiredArgsConstructor
 public class DataCollectorScheduler {
-    private final DataCollectorService dataCollectorService;
-
     private static Set<City> cities;
 
     static {
@@ -25,11 +23,14 @@ public class DataCollectorScheduler {
         try {
             File file = new File(DataCollectorScheduler.class.getResource("/data/current.city.list.json")
                                                              .getFile());
-            cities = mapper.readValue(file, new TypeReference<>() {});
+            cities = mapper.readValue(file, new TypeReference<Set<City>>() {
+            });
         } catch (Exception e) {
             log.error("Failed to read the list of cities", e);
         }
     }
+
+    private final DataCollectorService dataCollectorService;
 
     @Scheduled(fixedRate = 1 * 60 * 60 * 1000)
 //    @Scheduled(fixedRate = 2 * 60 * 1000)
