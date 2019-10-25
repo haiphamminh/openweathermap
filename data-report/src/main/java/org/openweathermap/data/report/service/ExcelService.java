@@ -1,11 +1,10 @@
 package org.openweathermap.data.report.service;
 
-import org.openweathermap.data.report.model.AggregatedData;
-
 import java.io.IOException;
 import java.util.List;
+import org.openweathermap.data.report.model.AggregatedData;
 
 public interface ExcelService {
-    byte[] export(String excelFile,
-                  List<AggregatedData> data) throws IOException, NoSuchFieldException, IllegalAccessException;
+    byte[] export(List<AggregatedData> data, List<String> fields)
+            throws IOException, NoSuchFieldException, IllegalAccessException;
 }

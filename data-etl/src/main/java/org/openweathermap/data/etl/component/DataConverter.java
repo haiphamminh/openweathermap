@@ -1,5 +1,12 @@
 package org.openweathermap.data.etl.component;
 
+import static org.openweathermap.data.model.WeatherData.Main;
+
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.openweathermap.data.model.WeatherData;
 import org.openweathermap.data.model.WeatherData.Coord;
 import org.openweathermap.data.model.WeatherData.Rain;
@@ -17,15 +24,6 @@ import org.openweathermap.data.repo.domain.WeatherEntity;
 import org.openweathermap.data.repo.domain.WindEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.openweathermap.data.model.WeatherData.Main;
 
 @Component
 public class DataConverter {
@@ -59,29 +57,33 @@ public class DataConverter {
         return weatherDataEntity;
     }
 
-    public Set<WeatherEntity> convert(WeatherDataEntity weatherDataEntity, Set<Weather> weathers) {
+    public List<WeatherEntity> convert(WeatherDataEntity weatherDataEntity, List<Weather> weathers) {
         if (CollectionUtils.isEmpty(weathers)) {
-            return Collections.emptySet();
+            return Collections.emptyList();
         }
         return weathers.stream()
                        .map(weather -> convert(weatherDataEntity, weather))
-                       .collect(Collectors.toSet());
+                       .collect(Collectors.toList());
     }
 
     public WeatherEntity convert(WeatherDataEntity weatherDataEntity, Weather weather) {
-        if (weather == null) return null;
+        if (weather == null) {
+            return null;
+        }
 
         return WeatherEntity.builder()
                             .description(weather.getDescription())
                             .icon(weather.getIcon())
-                            .main(weather.getMain())
+                            .status(weather.getMain())
                             .providerId(weather.getId())
                             .weatherData(weatherDataEntity)
                             .build();
     }
 
     public WindEntity convert(Wind wind) {
-        if (wind == null) return null;
+        if (wind == null) {
+            return null;
+        }
         return WindEntity.builder()
                          .degree(wind.getDegree())
                          .gust(wind.getGust())
@@ -90,7 +92,9 @@ public class DataConverter {
     }
 
     public SysEntity convert(Sys sys) {
-        if (sys == null) return null;
+        if (sys == null) {
+            return null;
+        }
         return SysEntity.builder()
                         .country(sys.getCountry())
                         .sunrise(convert(sys.getSunrise() * 1000))
@@ -103,21 +107,25 @@ public class DataConverter {
             return null;
         }
         return SnowEntity.builder()
-                         .oneHour(snow.getOneHour())
-                         .threeHours(snow.getThreeHours())
+                         .snowOneHour(snow.getOneHour())
+                         .snowThreeHours(snow.getThreeHours())
                          .build();
     }
 
     public RainEntity convert(Rain rain) {
-        if (rain == null) return null;
+        if (rain == null) {
+            return null;
+        }
         return RainEntity.builder()
-                         .oneHour(rain.getOneHour())
-                         .threeHours(rain.getThreeHours())
+                         .rainOneHour(rain.getOneHour())
+                         .rainThreeHours(rain.getThreeHours())
                          .build();
     }
 
     public CoordEntity convert(Coord coord) {
-        if (coord == null) return null;
+        if (coord == null) {
+            return null;
+        }
         return CoordEntity.builder()
                           .lat(coord.getLat())
                           .lon(coord.getLon())
@@ -125,7 +133,9 @@ public class DataConverter {
     }
 
     public MainEntity convert(Main main) {
-        if (main == null) return null;
+        if (main == null) {
+            return null;
+        }
         return MainEntity.builder()
                          .grndLevel(main.getGrndLevel())
                          .humidity(main.getHumidity())

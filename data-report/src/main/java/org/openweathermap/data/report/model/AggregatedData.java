@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 @Builder
-//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AggregatedData {
     private Long cityId;
     private String cityName;
@@ -28,8 +27,9 @@ public class AggregatedData {
     private String country;
     private String sunrise;
     private String sunset;
-    private String weatherDescription;
-    private String weatherIcon;
+    private String status;
+    private String description;
+    private String icon;
     private Float speed;
     private Float degree;
     private Float gust;

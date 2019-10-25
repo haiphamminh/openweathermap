@@ -1,8 +1,7 @@
 package org.openweathermap.data.etl.service;
 
-import org.openweathermap.data.model.WeatherData;
-
 import java.util.List;
+import org.openweathermap.data.model.WeatherData;
 
 public interface DataTransformer {
     void transformAndSave(List<WeatherData> weatherDatas);

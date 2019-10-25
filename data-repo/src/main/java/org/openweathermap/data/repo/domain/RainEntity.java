@@ -1,16 +1,15 @@
 package org.openweathermap.data.repo.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 @Data
 @Builder
@@ -21,9 +20,9 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = true)
 public class RainEntity extends AuditEntity {
     @Column(name = "one_hour")
-    private Float oneHour;
+    private Float rainOneHour;
     @Column(name = "three_hours")
-    private Float threeHours;
+    private Float rainThreeHours;
     @OneToOne(mappedBy = "rain")
     @JsonIgnore
     private WeatherDataEntity weatherData;
