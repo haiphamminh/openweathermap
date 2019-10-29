@@ -2,8 +2,10 @@ package org.openweathermap.data.etl.component;
 
 import static org.openweathermap.data.model.WeatherData.Main;
 
-import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,44 +31,55 @@ import org.springframework.util.CollectionUtils;
 public class DataConverter {
     public static void main(String[] args) {
         DataConverter converter = new DataConverter();
-        System.out.println(converter.convert(1571383815));
+        System.out.println(converter.formatAtTimezone(1571383815, ZoneOffset.ofTotalSeconds(25200)));
+        ZonedDateTime instant = Instant.ofEpochSecond(1571383815)
+                                       .atZone(ZoneOffset.UTC);
+        System.out.println(instant.format(DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z")));
+        System.out.println(instant);
+        /*Timestamp t = converter.convert(1571383815, ZoneOffset.UTC);
+        DateFormat df = DateFormat.getDateTimeInstance();
+        df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        System.out.println(df.format(t));
+        System.out.println(t);*/
     }
 
-    public List<WeatherDataEntity> convert(List<WeatherData> data) {
+    public List<WeatherDataEntity> toEntity(List<WeatherData> data) {
         return data.stream()
-                   .map(this::convert)
+                   .map(this::toEntity)
                    .collect(Collectors.toList());
     }
 
-    public WeatherDataEntity convert(WeatherData data) {
+    public WeatherDataEntity toEntity(WeatherData data) {
         WeatherDataEntity weatherDataEntity = WeatherDataEntity.builder()
                                                                .cityId(data.getId())
                                                                .cityName(data.getName())
                                                                .cloudiness(data.getClouds()
                                                                                .getAll())
                                                                .timezone(data.getTimezone())
-                                                               .dataCalculationTime(convert(data.getDt() * 1000))
-                                                               .coord(convert(data.getCoord()))
-                                                               .main(convert(data.getMain()))
-                                                               .rain(convert(data.getRain()))
-                                                               .snow(convert(data.getSnow()))
-                                                               .sys(convert(data.getSys()))
-                                                               .wind(convert(data.getWind()))
+                                                               .dct(atOffset(data.getDt(),
+                                                                             ZoneOffset.UTC).toLocalDateTime())
+                                                               .coord(toEntity(data.getCoord()))
+                                                               .main(toEntity(data.getMain()))
+                                                               .rain(toEntity(data.getRain()))
+                                                               .snow(toEntity(data.getSnow()))
+                                                               .sys(toEntity(data.getSys(), data.getTimezone()))
+                                                               .wind(toEntity(data.getWind()))
                                                                .build();
-        weatherDataEntity.setWeathers(convert(weatherDataEntity, data.getWeather()));
+        weatherDataEntity.setWeathers(toEntity(weatherDataEntity, data.getWeather()));
         return weatherDataEntity;
     }
 
-    public List<WeatherEntity> convert(WeatherDataEntity weatherDataEntity, List<Weather> weathers) {
+    public List<WeatherEntity> toEntity(WeatherDataEntity weatherDataEntity, List<Weather> weathers) {
         if (CollectionUtils.isEmpty(weathers)) {
             return Collections.emptyList();
         }
         return weathers.stream()
-                       .map(weather -> convert(weatherDataEntity, weather))
+                       .map(weather -> toEntity(weatherDataEntity, weather))
                        .collect(Collectors.toList());
     }
 
-    public WeatherEntity convert(WeatherDataEntity weatherDataEntity, Weather weather) {
+    public WeatherEntity toEntity(WeatherDataEntity weatherDataEntity, Weather weather) {
         if (weather == null) {
             return null;
         }
@@ -80,7 +93,7 @@ public class DataConverter {
                             .build();
     }
 
-    public WindEntity convert(Wind wind) {
+    public WindEntity toEntity(Wind wind) {
         if (wind == null) {
             return null;
         }
@@ -91,38 +104,41 @@ public class DataConverter {
                          .build();
     }
 
-    public SysEntity convert(Sys sys) {
+    public SysEntity toEntity(Sys sys, Integer timezone) {
         if (sys == null) {
             return null;
         }
+        ZoneOffset zoneOffset = ZoneOffset.ofTotalSeconds(timezone);
         return SysEntity.builder()
                         .country(sys.getCountry())
-                        .sunrise(convert(sys.getSunrise() * 1000))
-                        .sunset(convert(sys.getSunset() * 1000))
+                        .originalSunrise(atOffset(sys.getSunrise(), ZoneOffset.UTC).toLocalDateTime())
+                        .originalSunset(atOffset(sys.getSunset(), ZoneOffset.UTC).toLocalDateTime())
+                        .sunrise(formatAtTimezone(sys.getSunrise(), zoneOffset))
+                        .sunset(formatAtTimezone(sys.getSunset(), zoneOffset))
                         .build();
     }
 
-    public SnowEntity convert(Snow snow) {
+    public SnowEntity toEntity(Snow snow) {
         if (snow == null) {
             return null;
         }
         return SnowEntity.builder()
-                         .snowOneHour(snow.getOneHour())
-                         .snowThreeHours(snow.getThreeHours())
+                         .snowOneHour(snow.getSnowOneHour())
+                         .snowThreeHours(snow.getSnowThreeHours())
                          .build();
     }
 
-    public RainEntity convert(Rain rain) {
+    public RainEntity toEntity(Rain rain) {
         if (rain == null) {
             return null;
         }
         return RainEntity.builder()
-                         .rainOneHour(rain.getOneHour())
-                         .rainThreeHours(rain.getThreeHours())
+                         .rainOneHour(rain.getRainOneHour())
+                         .rainThreeHours(rain.getRainThreeHours())
                          .build();
     }
 
-    public CoordEntity convert(Coord coord) {
+    public CoordEntity toEntity(Coord coord) {
         if (coord == null) {
             return null;
         }
@@ -132,7 +148,7 @@ public class DataConverter {
                           .build();
     }
 
-    public MainEntity convert(Main main) {
+    public MainEntity toEntity(Main main) {
         if (main == null) {
             return null;
         }
@@ -147,8 +163,13 @@ public class DataConverter {
                          .build();
     }
 
-    public Timestamp convert(long time) {
-        Instant instant = Instant.ofEpochMilli(time);
-        return Timestamp.from(instant);
+    public ZonedDateTime atOffset(long timeInSec, ZoneOffset zoneOffset) {
+        return Instant.ofEpochSecond(timeInSec)
+                      .atZone(zoneOffset);
+    }
+
+    public String formatAtTimezone(long timeInSec, ZoneOffset zoneOffset) {
+        ZonedDateTime zonedDateTime = atOffset(timeInSec, zoneOffset);
+        return zonedDateTime.format(DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzzz"));
     }
 }

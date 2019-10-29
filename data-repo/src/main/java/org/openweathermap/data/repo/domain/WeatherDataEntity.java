@@ -1,6 +1,6 @@
 package org.openweathermap.data.repo.domain;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Builder
@@ -21,13 +22,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true, of = {"cityId", "cityName"})
+@ToString(callSuper = true, of = {"cityId", "cityName", "timezone", "cloudiness", "dct"})
 public class WeatherDataEntity extends AuditEntity {
     private Long cityId;
     private String cityName;
     private Integer timezone;
     private Integer cloudiness;
     @Column(name = "dct")
-    private Timestamp dataCalculationTime;
+    private LocalDateTime dct;
     @OneToOne(cascade = CascadeType.ALL)
     private CoordEntity coord;
     @OneToOne(cascade = CascadeType.ALL)

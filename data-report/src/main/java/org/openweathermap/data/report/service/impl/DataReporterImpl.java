@@ -1,11 +1,11 @@
 package org.openweathermap.data.report.service.impl;
 
 import static org.openweathermap.data.repo.spec.SpecificationBuilder.from;
-import static org.openweathermap.data.repo.spec.SpecificationUtils.inRange;
+import static org.openweathermap.data.repo.spec.SpecificationUtils.inDateRange;
 import static org.springframework.data.jpa.domain.Specification.where;
 
 import java.io.IOException;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +18,7 @@ import org.openweathermap.data.repo.spec.SpecificationBuilder;
 import org.openweathermap.data.repo.spec.SpecificationBuilder.SearchCriteria;
 import org.openweathermap.data.report.mapper.WeatherDataMapper;
 import org.openweathermap.data.report.model.AggregatedData;
-import org.openweathermap.data.report.model.Header;
+import org.openweathermap.data.report.model.Fields;
 import org.openweathermap.data.report.service.DataReporter;
 import org.openweathermap.data.report.service.ExcelService;
 import org.springframework.data.domain.Page;
@@ -45,7 +45,7 @@ public class DataReporterImpl implements DataReporter {
                                      .map(SearchCriteria::getKey)
                                      .collect(Collectors.toList()));
         }
-        List<String> keys = Header.getHeaderKeys();
+        List<String> keys = Fields.getHeaderKeys();
         String invalidFields = allFields.stream()
                                         .filter(f -> !keys.contains(f))
                                         .collect(Collectors.joining(","));
@@ -55,12 +55,13 @@ public class DataReporterImpl implements DataReporter {
     }
 
     @Override
-    public byte[] generateReport(Timestamp startDate, Timestamp endDate, List<String> fields, String search,
+    public byte[] generateReport(LocalDateTime startDate, LocalDateTime endDate, List<String> fields, String search,
                                  Pageable pageable)
             throws IOException, NoSuchFieldException, IllegalAccessException {
-        SpecificationBuilder builder = from(search);
-        validateFields(fields, builder.getParams());
-        Page<WeatherDataEntity> page = repository.findAll(where(builder.build()).and(inRange(startDate, endDate)),
+        SpecificationBuilder specBuilder = from(search);
+        validateFields(fields, specBuilder.getParams());
+        Page<WeatherDataEntity> page = repository.findAll(where(specBuilder.build()).and(
+                inDateRange(Fields.DCT.getKey(), startDate, endDate)),
                                                           pageable);
         List<AggregatedData> aggregatedData = mapper.entitiesToAggregateDataList(page.getContent());
         return excelService.export(aggregatedData, fields);

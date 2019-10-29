@@ -1,7 +1,8 @@
 package org.openweathermap.data.repo.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -20,8 +21,12 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class SysEntity extends AuditEntity {
     private String country;
-    private Timestamp sunrise;
-    private Timestamp sunset;
+    @Basic
+    private LocalDateTime originalSunrise;
+    @Basic
+    private LocalDateTime originalSunset;
+    private String sunrise;
+    private String sunset;
     @OneToOne(mappedBy = "sys")
     @JsonIgnore
     private WeatherDataEntity weatherData;

@@ -6,7 +6,7 @@ create table coord (
     lon numeric not null,
     lat numeric not null,
     created_date timestamp not null,
-    create_by text,
+    created_by text,
     last_modified_date timestamp not null,
     last_modified_by text
 );
@@ -21,7 +21,7 @@ create table main (
     sea_level numeric,
     grnd_level numeric,
     created_date timestamp not null,
-    create_by text,
+    created_by text,
     last_modified_date timestamp not null,
     last_modified_by text
 );
@@ -31,7 +31,7 @@ create table rain (
     one_hour numeric,
     three_hours numeric,
     created_date timestamp not null,
-    create_by text,
+    created_by text,
     last_modified_date timestamp not null,
     last_modified_by text
 );
@@ -41,7 +41,7 @@ create table snow (
     one_hour numeric,
     three_hours numeric,
     created_date timestamp not null,
-    create_by text,
+    created_by text,
     last_modified_date timestamp not null,
     last_modified_by text
 );
@@ -49,10 +49,12 @@ create table snow (
 create table sys (
     id bigserial primary key not null,
     country text,
-    sunrise timestamp,
-    sunset timestamp,
+    original_sunrise timestamp,
+    original_sunset timestamp,
+    sunrise text,
+    sunset text,
     created_date timestamp not null,
-    create_by text,
+    created_by text,
     last_modified_date timestamp not null,
     last_modified_by text
 );
@@ -63,7 +65,7 @@ create table wind (
     deg numeric,
     gust numeric,
     created_date timestamp not null,
-    create_by text,
+    created_by text,
     last_modified_date timestamp not null,
     last_modified_by text
 );
@@ -82,7 +84,7 @@ create table weather_data (
     sys_id bigint not null references sys(id),
     wind_id bigint not null references wind(id),
     created_date timestamp not null,
-    create_by text,
+    created_by text,
     last_modified_date timestamp not null,
     last_modified_by text
 );
@@ -95,7 +97,7 @@ create table weather (
     icon text,
     weather_data_id bigint not null references weather_data(id),
     created_date timestamp not null,
-    create_by text,
+    created_by text,
     last_modified_date timestamp not null,
     last_modified_by text
 );

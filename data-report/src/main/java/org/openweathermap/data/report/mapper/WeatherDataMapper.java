@@ -33,7 +33,8 @@ public interface WeatherDataMapper {
                       @Mapping(target = "sunset", source = "sys.sunset"),
                       @Mapping(target = "degree", source = "wind.degree"),
                       @Mapping(target = "gust", source = "wind.gust"),
-                      @Mapping(target = "speed", source = "wind.speed")
+                      @Mapping(target = "speed", source = "wind.speed"),
+                      @Mapping(target = "dct", source = "dct", dateFormat = "EEE, dd MMM yyyy HH:mm:ss")
               })
     AggregatedData entityToAggregateData(WeatherDataEntity entity);
 

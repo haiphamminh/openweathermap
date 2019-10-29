@@ -1,15 +1,19 @@
 package org.openweathermap.data.report.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AggregatedData {
     private Long cityId;
     private String cityName;
     private Integer cloudiness;
-    private String dataCalculationTime;
+    private String dct;
     private Integer timezone;
     private Float lon;
     private Float lat;

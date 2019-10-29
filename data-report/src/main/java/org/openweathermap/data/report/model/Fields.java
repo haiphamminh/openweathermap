@@ -1,17 +1,16 @@
 package org.openweathermap.data.report.model;
 
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public enum Header {
+public enum Fields {
     NO("no", "No."),
     CITY_ID("cityId", "City ID"),
     CITY_NAME("cityName", "City Name"),
     CLOUDINESS("cloudiness", "Cloudiness (%)"),
-    DCT("dataCalculationTime", "Data Computation Time"),
+    DCT("dct", "Data Computation Time"),
     TIMEZONE("timezone", "Timezone"),
     LON("lon", "Longitude"),
     LAT("lat", "Latitude"),
@@ -36,12 +35,12 @@ public enum Header {
     GUST("gust", "Gust");
 
     private static final Map<String, String> map = Stream.of(values())
-                                                         .collect(Collectors.toMap(Header::getKey,
-                                                                                   Header::getDisplayName));
+                                                         .collect(Collectors.toMap(Fields::getKey,
+                                                                                   Fields::getDisplayName));
     private final String key;
     private final String displayName;
 
-    Header(String key, String displayName) {
+    Fields(String key, String displayName) {
         this.key = key;
         this.displayName = displayName;
     }

@@ -70,17 +70,17 @@ public class WeatherData {
     @Data
     public static class Rain {
         @JsonProperty("1h")
-        private Float oneHour;
+        private Float rainOneHour;
         @JsonProperty("3h")
-        private Float threeHours;
+        private Float rainThreeHours;
     }
 
     @Data
     public static class Snow {
         @JsonProperty("1h")
-        private Float oneHour;
+        private Float snowOneHour;
         @JsonProperty("3h")
-        private Float threeHours;
+        private Float snowThreeHours;
     }
 
     @Data

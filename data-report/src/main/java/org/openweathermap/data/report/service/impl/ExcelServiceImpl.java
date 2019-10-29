@@ -16,7 +16,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.openweathermap.data.report.model.AggregatedData;
-import org.openweathermap.data.report.model.Header;
+import org.openweathermap.data.report.model.Fields;
 import org.openweathermap.data.report.service.ExcelService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class ExcelServiceImpl implements ExcelService {
         CellStyle style = createHeaderCellStyle(wb, 10, true);
         Row row = sheet.createRow(rowIndex);
         for (int i = 0; i < headers.size(); i++) {
-            createCell(row, Header.getDisplayName(headers.get(i)), i, style);
+            createCell(row, Fields.getDisplayName(headers.get(i)), i, style);
         }
     }
 
@@ -82,10 +82,10 @@ public class ExcelServiceImpl implements ExcelService {
 
     private List<String> extractHeaders(List<String> fields) {
         if (CollectionUtils.isEmpty(fields)) {
-            return Header.getHeaderKeys();
+            return Fields.getHeaderKeys();
         }
         List<String> headers = new ArrayList<>(fields);
-        headers.add(0, Header.NO.getKey());
+        headers.add(0, Fields.NO.getKey());
         return headers;
     }
 

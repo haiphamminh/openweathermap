@@ -21,7 +21,7 @@ public class DataTransformerImpl implements DataTransformer {
 
     @Override
     public void transformAndSave(List<WeatherData> data) {
-        List<WeatherDataEntity> entities = dataConverter.convert(data);
+        List<WeatherDataEntity> entities = dataConverter.toEntity(data);
         repository.saveAll(entities);
         log.info("Save {} entities successfully", entities.size());
     }
