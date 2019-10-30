@@ -10,7 +10,6 @@ import org.openweathermap.data.collector.model.City;
 import org.openweathermap.data.collector.service.DataCollectorService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 @Slf4j
 @Component
@@ -35,7 +34,7 @@ public class DataCollectorScheduler {
     @Scheduled(fixedRate = 1 * 60 * 60 * 1000)
 //    @Scheduled(fixedRate = 2 * 60 * 1000)
     public void collectData() {
-        if (CollectionUtils.isEmpty(cities)) {
+        /*if (CollectionUtils.isEmpty(cities)) {
             return;
         }
         cities.forEach(city -> {
@@ -45,6 +44,7 @@ public class DataCollectorScheduler {
             } catch (Exception e) {
                 log.error("Failed to fetch data for " + city, e);
             }
-        });
+        });*/
+        dataCollectorService.fetchCurrentWeatherDataByCityName("Thanh pho Ho Chi Minh,vn", "metrics", "");
     }
 }

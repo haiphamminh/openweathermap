@@ -2,6 +2,4 @@ dependencies {
     compile project(':data-repo')
     compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
     compile "org.apache.poi:poi:4.1.1"
-
-
 }
