@@ -20,14 +20,18 @@ public class SpecificationBuilder {
         params = new ArrayList<>();
     }
 
-    public static SpecificationBuilder from(String search) {
+    public static Matcher parse(String search) {
         Pattern pattern = Pattern.compile("(\\w+?)(:|<|>|>=|<=)([\\w ]+?),", Pattern.UNICODE_CHARACTER_CLASS);
-        Matcher matcher = pattern.matcher(search + ",");
+        return pattern.matcher(search + ",");
+    }
+
+    public static Specification<WeatherDataEntity> from(String search) {
+        Matcher matcher = parse(search);
         SpecificationBuilder builder = new SpecificationBuilder();
         while (matcher.find()) {
             builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
         }
-        return builder;
+        return builder.build();
     }
 
     public SpecificationBuilder with(String key, String operation, Object value) {
@@ -41,9 +45,9 @@ public class SpecificationBuilder {
         }
 
         Specification<WeatherDataEntity> result = toPredicate(params.get(0));
-        for (int i = 1; i < params.size(); i++) {
+        for (int iter = 1; iter < params.size(); iter++) {
             result = Specification.where(result)
-                                  .and(toPredicate(params.get(i)));
+                                  .and(toPredicate(params.get(iter)));
         }
         return result;
     }

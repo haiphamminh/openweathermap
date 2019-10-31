@@ -11,12 +11,14 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.openweathermap.data.report.model.Fields;
 import org.openweathermap.data.report.service.DataReporter;
+import org.openweathermap.data.report.validation.FieldConstraint;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/report")
+@Validated
 public class DataReporterController {
     private final DataReporter reporter;
 
@@ -34,8 +37,8 @@ public class DataReporterController {
     public ResponseEntity<byte[]> generateReport(
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endDate,
-            @RequestParam(required = false, name = "q") String search,
-            @RequestParam(required = false) List<String> fields,
+            @RequestParam(required = false, name = "q") @FieldConstraint String search,
+            @RequestParam(required = false) @FieldConstraint List<String> fields,
             @PageableDefault(size = 50, sort = {"id"}) Pageable pageable)
             throws IOException, NoSuchFieldException, IllegalAccessException {
         byte[] data = reporter.generateReport(startDate, endDate, fields, search, pageable);
@@ -48,8 +51,7 @@ public class DataReporterController {
     @GetMapping("/fields")
     public ResponseEntity<Map<String, String>> getSupportedFields() {
         Map<String, String> supportedFields = Stream.of(Fields.values())
-                                                    .filter(f -> !f.getKey()
-                                                                   .equalsIgnoreCase(Fields.NO.getKey()))
+                                                    .filter(f -> !f.equals(Fields.NO))
                                                     .collect(Collectors.toMap(Fields::getKey, Fields::getDisplayName));
         return ResponseEntity.ok(supportedFields);
     }
